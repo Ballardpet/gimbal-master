@@ -1,0 +1,7 @@
+Swap to local antenna rather than an api
+ - This will NOT be a web app
+    - Do I swap away from my current architecture?
+
+Maybe display a list of local flights to track
+ - let them track one?
+ - sort by distance
