@@ -1,0 +1,12 @@
+Running Server
+ - enter server folder
+ - enter src
+ - node .\server.js
+
+Running Client
+ - npm run dev in main vite folder
+
+Running ADS-B
+ - enter dump1090-fa
+ - open a wsl terminal
+ - ./dump1090 --net --write-json /tmp/dump1090
