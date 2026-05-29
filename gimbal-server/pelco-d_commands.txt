@@ -1,0 +1,5 @@
+https://www.epiphan.com/userguides/dvi2usb-3-0/Content/UserGuides/PTZ/3-operation/PELCODcommands.htm?srsltid=AfmBOooGXJS3H6bLevzTYH8-T-xh6lXk7p2ZLkq1wbJd9f0kL8t20YCm
+ - set, clear, and call presets. Can I calibrate with this?
+ - am able to query pan and tilt positions
+    - This gimbal does not support queries, but it does have a limit to how far it can pan
+    - Actually it does?
