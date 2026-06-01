@@ -7,6 +7,17 @@ Running Client
  - npm run dev in main vite folder
 
 Running ADS-B
- - enter dump1090-fa
+ - enter dump1090
+ - .\dump1090.exe --interactive --net
+
+
+-fa
  - open a wsl terminal
+
+sudo apt update
+sudo apt install rtl-sdr librtlsdr0 librtlsdr-dev
+
  - ./dump1090 --net --write-json /tmp/dump1090
+
+
+Man fuck this. We aren't using dump1090-fa. Making my god damn own
