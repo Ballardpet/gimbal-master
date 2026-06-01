@@ -17,6 +17,10 @@ class GpsService {
         // call adsbAPI with hexid to get relevant aircraft
         //const url = `https://api.airplanes.live/v2/hex/${targetHexID}`;
 
+        // Holy shit this is goated
+        // http://localhost:8080/data/aircraft.json
+
+
         
         try {
             /*
