@@ -18,26 +18,31 @@ class GpsService {
         //const url = `https://api.airplanes.live/v2/hex/${targetHexID}`;
 
         // Holy shit this is goated
-        // http://localhost:8080/data/aircraft.json
+        const url= "http://localhost:8080/data/aircraft.json";
 
 
         
         try {
-            /*
+            // get json of all planes nearby
             const response = await fetch(url);
             const data = await response.json();
+
+            //const target = // the plane with the matching hexid
+            const target = data.aircraft.find(plane => plane.hex === targetHexID.toLowerCase());
            
             // This one for airplanes.live: 
-            const target = data.ac[0]
-            */
+            //const target = data.ac[0]
+            
 
 
+            /*
             const raw = await fs.readFile(AIRCRAFT_PATH, "utf-8");
             const data = JSON.parse(raw);
 
             const target = data.aircraft.find(
                 ac => ac.hex && ac.hex.toLowerCase() === targetHexID.toLowerCase()
             );
+            */
 
             // Idk if this is the right format for returning the data I want
             // Make sure this is returning in JSON
@@ -46,7 +51,7 @@ class GpsService {
             let targetLat = target.lat;
             let targetLon = target.lon;
             // barometric height; height above sea level, not ground
-            let targetEl = target.alt_baro;
+            let targetEl = target.altitude;
 
             // Reject invalid values
             if (![targetLat, targetLon, targetEl].every(Number.isFinite)) {
