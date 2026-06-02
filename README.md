@@ -1,3 +1,13 @@
+Simple setup
+ - ensure you are in the main "gimbal-master" directgory
+ - enter ".\install.bat" for initial installation of dependencies
+    - follow extra instructions for Dump1090
+ - enter ".\start.bat" to run full program
+    - go to "http://localhost:5173/" for gimbal control
+    - go to "http://localhost:8080/" for map of local aircraft
+
+
+
 Setup
  - gimbal-vite
     - cd to gimbal-vite
@@ -10,6 +20,7 @@ Setup
     - run setup.exe
     - enter current location
     - allow data to download
+
 
 Running the program
  - gimbal-vite: the front end of the program
@@ -25,10 +36,9 @@ Running the program
  - Dump1090: open source ads-b decoder
     - used to take in ads-b data from nearby aircraft
     - cd to Dump1090
-    - enter "./dump1090 --net --write-json /tmp/dump1090"
+    - enter ".\dump1090.exe --interactive --net"
     - this converts incoming ads-b transmissions into something usable by the back end
     - go to http://localhost:8080/ for a live map of local aircraft
     - can select aircraft off the map
     - once an aircraft is selected, can get hex code from url
     - copy hex code, paste into front end, and select track to track that aircraft
-
