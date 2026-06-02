@@ -1,4 +1,7 @@
 Simple setup
+ - start by downloading drivers
+    - SDR: https://www.rtl-sdr.com/rtl-sdr-quick-start-guide/
+    -  usb to rs485 converter: download through device manager
  - ensure you are in the main "gimbal-master" directgory
  - enter ".\install.bat" for initial installation of dependencies
     - follow extra instructions for Dump1090
@@ -9,6 +12,9 @@ Simple setup
 
 
 Setup
+ - start by downloading drivers
+    - SDR: https://www.rtl-sdr.com/rtl-sdr-quick-start-guide/
+    -  usb to rs485 converter: download through device manager
  - gimbal-vite
     - cd to gimbal-vite
     - enter "npm i" in the command line to install dependencies
@@ -42,3 +48,8 @@ Running the program
     - can select aircraft off the map
     - once an aircraft is selected, can get hex code from url
     - copy hex code, paste into front end, and select track to track that aircraft
+
+
+Hardware
+ - Will-Burt AP-8 Accupoint Positioner
+ - RTL2832U SDR
