@@ -9,6 +9,7 @@ Setup
     - open dump1090 folder
     - run setup.exe
     - enter current location
+    - allow data to download
 
 Running the program
  - gimbal-vite: the front end of the program

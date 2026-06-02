@@ -1,12 +1,3 @@
-// This will allow the user to input coordinates for the gimbal to point towards
-
-// Research ECEF coordinates. Terry said they might be easier to work with
-
-// Eventually have the current coordinates be auto populated with whatever they should be
-
-// Finding azimuth by coordinates: https://www.youtube.com/watch?v=EiI-Auqp764
-    // I think we do the theata AB formula, use the gimbal as B, and use the result as the theta
-    // Maybe use the haversin formula for distance to point, combine that with elevation difference for height, and use the two for elevation angle
 import { useState, useRef } from "react";
 
 export default function GPS(){
