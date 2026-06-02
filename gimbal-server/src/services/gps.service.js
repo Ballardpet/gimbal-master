@@ -15,12 +15,10 @@ class GpsService {
             // find the aircraft with matching hexid
             const target = data.aircraft.find(plane => plane.hex === targetHexID.toLowerCase());
 
-
             // use relevant aircraft info to get target LLA
             let targetLat = target.lat;
             let targetLon = target.lon;
-            // barometric height; height above sea level, not ground
-            let targetEl = target.altitude;
+            let targetEl = target.altitude; // I'm assuming this is barometric (above sea level), but I'll have to double check
 
             // Reject invalid values
             if (![targetLat, targetLon, targetEl].every(Number.isFinite)) {
@@ -29,7 +27,7 @@ class GpsService {
 
             // convert elevation from feet to meters
             targetEl = targetEl * 0.3048;
-            // can call pointTo using startn and target LLA
+            // can call pointTo using start and target LLA
             this.pointTo(startLat, startLon, startEl, targetLat, targetLon, targetEl)
 
             return {
