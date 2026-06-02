@@ -1,37 +1,21 @@
-// shouldn't need imports
-
 class GpsBuilder {
-    // shouldn't need to track variables
-
-    // shouldn't need a constructor
 
     async findAzimuthAngle(startLat, startLon, destLat, destLon) {
-        // I think we do the theata AB formula, use the gimbal as B, and use the result as the theta
-            // NOPE! DRAWING WAS WEIRD! Theta AB where gimbal is a
-        // this will be the formula from the youtube video
-            // angle = tan^-1((destx - gimbalx)/(desty - gimbaly))
-            // azimuth angle = 180 + angle
-        // let formulaAngle = Math.atan((destLon - startLon)/(destLat - startLat)); // This was original but it may get messed up in other quadrants
+        // this will be the formula from the youtube video: https://www.youtube.com/watch?v=EiI-Auqp764
         let formulaAngle = Math.atan2((destLon - startLon), (destLat - startLat));
         
         formulaAngle = formulaAngle * (180 / Math.PI); // Convert from radians to degrees
-
-        // console.log("formua angle", formulaAngle);
 
         let azimuthAngle = (180.00 + formulaAngle) % 360; // check about the decimal and if it works how I think.
         return azimuthAngle;
     }
 
     // honestly this whole thing is kind of a shortcut
-        // cobbleing together spherical triogonometry with my original cartesian idea
-        // probably find something more legit
-            // Nope! we're pointing at drones, not planes, so the earth is flat and my math is fine
-                // ACTUALLY I might be pointing at stuff further away, so I may need to be more accurate
+        // kind of assumes the earth is flat for how high to point. depending on how far away the target is, it might not matter
     async findElevationAngle(startLat, startLon, startEl, destLat, destLon, destEl){
         // theta = 90 degrees - (tan^-1(altitude difference / haversine formula))
-        let elDiff = destEl - startEl; // Drone should be above ground
+        let elDiff = destEl - startEl; // Aircraft should be above ground
         let haversine = await this.haversine(startLat, startLon, destLat, destLon);
-        // let theta = Math.atan(elDiff / haversine); // Original but may get messed up in other quadrants
         let theta = Math.atan2(elDiff, haversine);
         theta = theta * (180 / Math.PI); // Convert from radians to degrees
         let elevationAngle = 90 - theta;

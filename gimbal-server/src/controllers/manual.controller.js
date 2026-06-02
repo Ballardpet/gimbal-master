@@ -5,9 +5,7 @@ const ManualController = () => {
     const router = express.Router();
     const manualService = new ManualService();
 
-    // Up route
-    // Maybe just one route to move
-        // Take in direction as a variable and have the service generate appropriate command
+    // Move route
     router.post("/manualMove", async (req, res) => {
         const { direction, speed } = req.body;
         try {

@@ -3,7 +3,6 @@ import { pelcoBuilder } from "../pelcoBuilder.js";
 
 class AzElService {
     // This is where automated control to pointing to az/el will happen
-    // MAYBE MAKE SURE THAT WHEN I DO %360 OR WHATEVER IT KEEPS THE DECIMALS!!!! AND SUCH
     async pointTo(azimuth, elevation){
         // sanitize negative azimuth
         if (azimuth < 0){

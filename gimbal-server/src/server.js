@@ -9,7 +9,6 @@ import AzElController from "./controllers/azEl.controller.js";
 import DisplayController from "./controllers/display.controller.js";
 import GpsController from "./controllers/gps.controller.js";
 import ManualController from "./controllers/manual.controller.js";
-import ADSBController from "./controllers/adsb.controller.js";
 
 import { fileURLToPath } from "url"
 
@@ -30,7 +29,6 @@ app.use("/api/azel", AzElController());
 app.use("/api/display", DisplayController());
 app.use("/api/gps", GpsController());
 app.use("/api/manual", ManualController());
-app.use("/api/adsb", ADSBController());
 
 app.listen(port, () => {
     console.log("listening on port " + port);

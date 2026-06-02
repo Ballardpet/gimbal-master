@@ -24,7 +24,6 @@ export default function GPS(){
     // ADSB stuff
     const [target, setTarget] = useState("");
 
-    // THIS IS WRONG
     const loopRef = useRef(false);
 
     const [targetLat, setTargetLat] = useState(0);
@@ -32,7 +31,6 @@ export default function GPS(){
     const [targetEl, setTargetEl] = useState(0);
 
     const handleClick = async() => {
-        //
         console.log("Put a relevant GPS message here");
 
         const res = await fetch("/api/gps/gpsPoint", {
@@ -54,13 +52,10 @@ export default function GPS(){
     }
 
     const handleADSB = async() => {
-        // This gets triggered on click
-        // first thing it does is set loop boolean to true if false and false if true
-            // To stop tracking later
         // toggles start/stop
         loopRef.current = !loopRef.current;
 
-        // maybe note when we stop
+        // maybe make an indicator when we start/stop
 
         while (loopRef.current){
             // call ADSBPoint
@@ -80,7 +75,6 @@ export default function GPS(){
                     }),
                 });
                 const data = await res.json();
-                // this might not be the right format. probably data.somethin'
                 setTargetLat(data.lat);
                 setTargetLon(data.lon);
                 setTargetEl(data.el);
@@ -88,8 +82,7 @@ export default function GPS(){
             catch (err) {
                 console.error(err);
             }
-            // wait a 1.1 second (so api owner doesn't get pissed)  
-                // Can lower this when using my own api
+            // Call api every second
             await sleep (1000);
         }
     }
@@ -121,7 +114,6 @@ export default function GPS(){
             <h2>Track ADS-B</h2>
             <label htmlFor="target">Enter target hex code: </label>
             <input type="text" id="target" name = "target" value={target} onChange={(e) => setTarget(e.target.value)} />
-            <div>Eventually display the target's coordinates here when tracking</div>
             <div>Target Latitude: {targetLat} Target Longitue: {targetLon} Target Elevation: {targetEl}</div>
             <button type="button" className="automated" onClick={() => handleADSB()}>Start/Stop Tracking</button>
 

@@ -52,12 +52,6 @@ export default function Manual_control(){
 
     
     return (
-        /**
-         * Want the buttons to have an "onClick" that sends the appropriate command to the back end
-         * maybe "onClick={handleClick}"
-         * const handleClick = async (e) => {do shit};
-         *         Make a json payload (req res) with appropriate command (direction) and speed (maybe)
-         */
         <section>
             <h2>Manual Control</h2>
             <div>

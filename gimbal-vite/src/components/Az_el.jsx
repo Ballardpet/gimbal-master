@@ -3,8 +3,6 @@ import { useState } from "react";
 
 export default function Az_el(){
 
-    // in this code, how would I get azimuth and elevation from the input box into the onclick?
-
     const [azimuth, setAzimuth] = useState("");
     const [elevation, setElevation] = useState("");
     

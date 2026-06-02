@@ -43,7 +43,7 @@ export default function Display(){
 
     return (
         <section>
-            <h2>Display Gimbal's Orientation and Movement</h2>
+            <h2>Gimbal Orientation</h2>
             <div>Current Azimuth: {azimuth}</div>
             <div>Current Elevation: {elevation}</div>
         </section>

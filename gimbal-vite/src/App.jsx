@@ -8,7 +8,6 @@ import Manual_control from './components/Manual_Control'
 import GPS from './components/GPS'
 import Az_el from './components/Az_el'
 import Display from './components/Display'
-import ADSB from './components/ADSB'
 
 function App() {
 

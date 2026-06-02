@@ -15,26 +15,20 @@ import { ReadlineParser } from "@serialport/parser-readline";
 
 class PelcoBuilder {
     static sync = 0xFF;
-    //static gimbalAddress = 0x00;
-    static gimbalAddress = 0x01; // check this
+    static gimbalAddress = 0x01; // may also be 0x00
     static port = new SerialPort({
         path: 'COM4',
-        //baudRate: 9600,
-        //baudRate: 4800,
         dataBits: 8,
         stopBits: 1,
-        baudRate: 2400, // check this
+        baudRate: 2400, // May also be 4800 or 9600
         autoOpen: false, // this keeps the program from crashing if the usb-to-rs485 coverter isn't plugged in
     });
     static parser = new ReadlineParser();
     
 
-    // maybe make a constructor that initializes connection to the gimbal?
     constructor(){
-
         this.connectSerial();
         PelcoBuilder.port.pipe(PelcoBuilder.parser); // connect the parser to the port
-
     }
 
     async connectSerial(){
@@ -65,7 +59,7 @@ class PelcoBuilder {
             // 00001000
             cmd2 = 0x08;
             data1 = 0x00;
-            data2 = (speed * 8 - 1); // how do I add the 0x here??? Don't need to! Both saved the same way
+            data2 = (speed * 8 - 1);
             checksum = await this.calculateChecksum( PelcoBuilder.gimbalAddress, cmd1, cmd2, data1, data2 );
         }
         else if(direction == "down") {
@@ -117,7 +111,7 @@ class PelcoBuilder {
         return("Stop command received on server and sent to gimbal.");
     }
 
-    // point to a specified az/el (also use this for gps and tspi feed. need to do more math for those though)
+    // point to a specified az/el. also used this for gps and tspi feed
     async pointTo(azimuth, elevation) {
         let panCommand = await pelcoBuilder.buildSetPan(azimuth);
         let tiltCommand = await pelcoBuilder.buildSetTilt(elevation);
