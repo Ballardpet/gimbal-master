@@ -15,6 +15,7 @@ export default function GPS(){
     // ADSB stuff
     const [target, setTarget] = useState("");
 
+    const [isTracking, setIsTracking] = useState(false);
     const loopRef = useRef(false);
 
     const [targetLat, setTargetLat] = useState(0);
@@ -44,7 +45,10 @@ export default function GPS(){
 
     const handleADSB = async() => {
         // toggles start/stop
-        loopRef.current = !loopRef.current;
+        // loopRef.current = !loopRef.current;
+        const newState = !loopRef.current;
+        loopRef.current = newState;
+        setIsTracking(newState);
 
         // maybe make an indicator when we start/stop
 
@@ -106,7 +110,7 @@ export default function GPS(){
             <label htmlFor="target">Enter target hex code: </label>
             <input type="text" id="target" name = "target" value={target} onChange={(e) => setTarget(e.target.value)} />
             <div>Target Latitude: {targetLat} Target Longitue: {targetLon} Target Elevation: {targetEl}</div>
-            <button type="button" className="automated" onClick={() => handleADSB()}>Start/Stop Tracking</button>
+            <button type="button" className="automated" onClick={() => handleADSB()} style={{backgroundColor: isTracking ? "red" : "green",color: "white"}}>{isTracking ? "Stop Tracking" : "Start Tracking"}</button>
 
         </section>
     )
