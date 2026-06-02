@@ -1,13 +1,28 @@
 class GpsBuilder {
 
     async findAzimuthAngle(startLat, startLon, destLat, destLon) {
-        // this will be the formula from the youtube video: https://www.youtube.com/watch?v=EiI-Auqp764
-        let formulaAngle = Math.atan2((destLon - startLon), (destLat - startLat));
-        
-        formulaAngle = formulaAngle * (180 / Math.PI); // Convert from radians to degrees
+        // great circle bearing formula
 
-        let azimuthAngle = (180.00 + formulaAngle) % 360; // check about the decimal and if it works how I think.
-        return azimuthAngle;
+        // convert degrees → radians
+        let φ1 = startLat * Math.PI / 180;
+        let φ2 = destLat * Math.PI / 180;
+        let λ1 = startLon * Math.PI / 180;
+        let λ2 = destLon * Math.PI / 180;
+
+        let Δλ = λ2 - λ1;
+
+        // spherical components
+        let y = Math.sin(Δλ) * Math.cos(φ2);
+        let x = Math.cos(φ1) * Math.sin(φ2) -
+                Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+
+        // initial bearing
+        let θ = Math.atan2(y, x);
+
+        // convert to degrees + normalize
+        let bearing = θ * 180 / Math.PI;
+
+        return (bearing + 180) % 360;        
     }
 
     // This is a tiny bit off, but better accounts for the curvature of the earth than the old formula. Should be plenty accurate for up to 250 nmi
