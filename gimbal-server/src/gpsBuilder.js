@@ -10,13 +10,18 @@ class GpsBuilder {
         return azimuthAngle;
     }
 
-    // honestly this whole thing is kind of a shortcut
-        // kind of assumes the earth is flat for how high to point. depending on how far away the target is, it might not matter
+    // This is a tiny bit off, but better accounts for the curvature of the earth than the old formula. Should be plenty accurate for up to 250 nmi
     async findElevationAngle(startLat, startLon, startEl, destLat, destLon, destEl){
         // theta = 90 degrees - (tan^-1(altitude difference / haversine formula))
-        let elDiff = destEl - startEl; // Aircraft should be above ground
-        let haversine = await this.haversine(startLat, startLon, destLat, destLon);
-        let theta = Math.atan2(elDiff, haversine);
+
+        let groundDistance = await this.haversine(startLat, startLon, destLat, destLon);
+
+        // account for curvature of the earth
+        let R = 6371000;
+        let drop = (groundDistance * groundDistance) / (2 * R);
+
+        let elDiff = (destEl - startEl) - drop;
+        let theta = Math.atan2(elDiff, groundDistance);
         theta = theta * (180 / Math.PI); // Convert from radians to degrees
         let elevationAngle = 90 - theta;
         return elevationAngle;
