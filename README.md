@@ -10,6 +10,17 @@ Simple setup
     - go to "http://localhost:8080/" for map of local aircraft
 
 
+Physical calibration
+ - set gibal to be level
+ - calibrate coordinates:
+    - go to /gimbal-vite/src/components/GPS.jsx
+    - adjust start lat,lon, and el (lines ~8-10) to your current LLA
+    - can alternatively enter current coordinates on web front end and press "point to" to set current coordinates
+ - on web front end:
+    - calibrate direction:
+        - set destination azimuth to 180 and destination elevation to -90
+        - adjust gimbal so that plate points north
+
 
 Setup
  - start by downloading drivers
