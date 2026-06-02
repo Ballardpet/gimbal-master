@@ -1,7 +1,7 @@
-Simple setup
+Simple setup & start
  - start by downloading drivers
     - SDR: https://www.rtl-sdr.com/rtl-sdr-quick-start-guide/
-    -  usb to rs485 converter: download through device manager
+    - usb to rs485 converter: download through device manager
  - ensure you are in the main "gimbal-master" directgory
  - enter ".\install.bat" for initial installation of dependencies
     - follow extra instructions for Dump1090
