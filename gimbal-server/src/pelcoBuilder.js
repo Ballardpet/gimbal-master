@@ -55,6 +55,9 @@ class PelcoBuilder {
         let data1;
         let data2;
         let checksum;
+        if (speed == 8) { // maybe fix ff issue
+            speed = 7.125
+        }
         if (direction == "up") {
             // 00001000
             cmd2 = 0x08;
@@ -72,14 +75,14 @@ class PelcoBuilder {
         else if(direction == "left") {
             // 00000100
             cmd2 = 0x04;
-            data1 = (speed * 32 - 2); // For some reason, gimbal can't take ff speed
+            data1 = (speed * 32 - 1); // For some reason, gimbal can't take ff speed
             data2 = 0x00;
             checksum = await this.calculateChecksum( PelcoBuilder.gimbalAddress, cmd1, cmd2, data1, data2 );
         }
         else if(direction == "right") {
             // 00000010
             cmd2 = 0x02;
-            data1 = (speed * 32 - 2); // For some reason, gimbal can't take ff speed
+            data1 = (speed * 32 - 1); // For some reason, gimbal can't take ff speed
             data2 = 0x00;
             checksum = await this.calculateChecksum( PelcoBuilder.gimbalAddress, cmd1, cmd2, data1, data2 );
         }
