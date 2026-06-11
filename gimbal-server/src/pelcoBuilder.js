@@ -55,8 +55,8 @@ class PelcoBuilder {
         let data1;
         let data2;
         let checksum;
-        if (speed == 8) { // maybe fix ff issue
-            speed = 7.125
+        if (speed == 8) { // Fixing the max speed issue
+            speed = 7.875
         }
         if (direction == "up") {
             // 00001000
