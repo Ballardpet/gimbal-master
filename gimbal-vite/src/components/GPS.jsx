@@ -5,11 +5,11 @@ export default function GPS(){
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     // GPS point
     // default to easy calibration coordinates (point at window)
-    const [startLat, setStartLat] = useState(30.488019725547414);
-    const [startLon, setStartLon] = useState(-86.49744627176644);
+    const [startLat, setStartLat] = useState(30.48805497184136 );
+    const [startLon, setStartLon] = useState(-86.4974440391438);
     const [startEl, setStartEl] = useState(0);
-    const [destLat, setDestLat] = useState(30.4884363462313);
-    const [destLon, setDestLon] = useState(-86.49798606632089);
+    const [destLat, setDestLat] = useState(30.488513065621497 );
+    const [destLon, setDestLon] = useState(-86.49811890303361);
     const [destEl, setDestEl] = useState(1);
 
     // ADSB stuff
