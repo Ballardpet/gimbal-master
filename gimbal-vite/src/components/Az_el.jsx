@@ -3,8 +3,8 @@ import { useState } from "react";
 
 export default function Az_el(){
 
-    const [azimuth, setAzimuth] = useState("");
-    const [elevation, setElevation] = useState("");
+    const [azimuth, setAzimuth] = useState(180);
+    const [elevation, setElevation] = useState(90);
     
     const handleClick = async() => {
 
@@ -27,7 +27,7 @@ export default function Az_el(){
 
     return (
         <section>
-            <h2>Point to Azimuth/Elevation</h2>
+            <h2>Point to Azimuth/Elevation: Default Points South</h2>
             <label htmlFor="azimuth">Destination Azimuth,0 to 360.00: </label>
             <input type="text" id="azimuth" name = "azimuth" value={azimuth} onChange={(e) => setAzimuth(e.target.value)} />
             <br />
