@@ -8,8 +8,12 @@
     // Tilt: 00-3f
         //64 total options
         // multiply input by 8 and subtract 1 for speed
+import { useEffect, useRef } from "react";
 
 export default function Manual_control(){
+////////////////////////////////////
+    const activeDirection = useRef(null);
+    /////////////////////////////////
 
     const handleClick = async (direction) => {
 
@@ -50,6 +54,51 @@ export default function Manual_control(){
         }
     }
 
+//////////////////////////////////////////////////////////////
+    useEffect(() => {
+        const keyToDirection = {
+            ArrowUp: "up",
+            ArrowDown: "down",
+            ArrowLeft: "left",
+            ArrowRight: "right",
+        };
+
+        const handleKeyDown = (event) => {
+            const direction = keyToDirection[event.key];
+
+            if (!direction) return;
+
+            event.preventDefault();
+
+            // Ignore auto-repeat events while key is held
+            if (event.repeat) return;
+
+            activeDirection.current = direction;
+            handleClick(direction);
+        };
+
+        const handleKeyUp = (event) => {
+            const direction = keyToDirection[event.key];
+
+            if (!direction) return;
+
+            event.preventDefault();
+
+            if (activeDirection.current === direction) {
+                activeDirection.current = null;
+                handleClick("stop");
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
+        };
+    }, []);
+//////////////////////////////////////////////////////
     
     return (
         <section>
