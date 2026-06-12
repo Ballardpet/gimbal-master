@@ -3,7 +3,7 @@ import { gpsBuilder } from "../gpsBuilder.js";
 
 class GpsService {
 
-    async adsb(startLat, startLon, startEl, targetHexID){
+    async adsb(startLat, startLon, startEl, targetHexID, cameraPoint){
         // Get data from dump1090
         const url= "http://localhost:8080/data/aircraft.json";
         
@@ -28,7 +28,7 @@ class GpsService {
             // convert elevation from feet to meters
             targetEl = targetEl * 0.3048;
             // can call pointTo using start and target LLA
-            this.pointTo(startLat, startLon, startEl, targetLat, targetLon, targetEl)
+            this.pointTo(startLat, startLon, startEl, targetLat, targetLon, targetEl, cameraPoint)
 
             return {
                 lat: targetLat,
@@ -42,7 +42,7 @@ class GpsService {
         }
     }
 
-    async pointTo(startLat, startLon, startEl, destLat, destLon, destEl) {
+    async pointTo(startLat, startLon, startEl, destLat, destLon, destEl, cameraPoint) {
         console.log({
             startLat,
             startLon,
@@ -60,6 +60,15 @@ class GpsService {
         azAngle = azAngle + 180;
         if (azAngle > 360) {
             azAngle = azAngle - 360;
+        }
+
+        // adjust orientation if pointing with camera instead of antenna 
+        if (cameraPoint) {
+            elAngle = elAngle - 90;
+        }
+        // handle wraparound
+        if (elAngle < 0) {
+            elAngle = elAngle + 360;
         }
 
         // convert to be usable by pelco-D

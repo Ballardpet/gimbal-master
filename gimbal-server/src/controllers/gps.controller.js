@@ -9,10 +9,11 @@ const GpsController = () => {
     const router = express.Router();
     const gpsService = new GpsService();
 
+    // cameraPoint is a boolean. for 90 degree difference of horizon
     router.post("/gpsPoint", async (req, res) => {
-        const { startLat, startLon, startEl, destLat, destLon, destEl } = req.body;
+        const { startLat, startLon, startEl, destLat, destLon, destEl, cameraPoint } = req.body;
         try {
-            const command = await gpsService.pointTo(startLat, startLon, startEl, destLat, destLon, destEl);
+            const command = await gpsService.pointTo(startLat, startLon, startEl, destLat, destLon, destEl, cameraPoint);
             res.status(201).json(command);
         }
         catch (error) {
@@ -21,9 +22,9 @@ const GpsController = () => {
     });
 
     router.post("/adsb", async (req, res) => {
-        const { startLat, startLon, startEl, targetHexID } = req.body;
+        const { startLat, startLon, startEl, targetHexID, cameraPoint } = req.body;
         try {
-            const response = await gpsService.adsb(startLat, startLon, startEl, targetHexID)
+            const response = await gpsService.adsb(startLat, startLon, startEl, targetHexID, cameraPoint)
             res.status(201).json(response)
         }
         catch (error) {

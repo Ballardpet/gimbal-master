@@ -22,6 +22,8 @@ export default function GPS(){
     const [targetLon, setTargetLon] = useState(0);
     const [targetEl, setTargetEl] = useState(0);
 
+    const [cameraPoint, setCameraPoint] = useState(false);
+
     const handleClick = async() => {
         console.log("Put a relevant GPS message here");
 
@@ -36,7 +38,8 @@ export default function GPS(){
                 startEl: startEl,
                 destLat: destLat,
                 destLon: destLon,
-                destEl: destEl
+                destEl: destEl, 
+                cameraPoint: cameraPoint
             }),
         });
         const data = await res.json();
@@ -66,7 +69,8 @@ export default function GPS(){
                         startLat: startLat,
                         startLon: startLon,
                         startEl: startEl,
-                        targetHexID: target
+                        targetHexID: target, 
+                        cameraPoint: cameraPoint
                     }),
                 });
                 const data = await res.json();
@@ -86,6 +90,12 @@ export default function GPS(){
     return (
         <section>
             <h2>Point to GPS Coordinate. Using DD </h2>
+
+
+            <label><input type="checkbox" checked={cameraPoint} onChange={(e) => setCameraPoint(e.target.checked)}/>Camera Point: Adjust "Level" 90 Degrees</label>
+            
+            <br />
+            
             <label htmlFor="currentLat">Current Latitude: </label>
             <input type="text" id="currentLat" name="currentLat" value={startLat} onChange={(e) => setStartLat(e.target.value)}/>
             <label htmlFor="currentLong">Current Longitude: </label>

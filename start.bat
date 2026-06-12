@@ -13,8 +13,8 @@ REM Give the servers a few seconds to start
 timeout /t 5 /nobreak >nul
 
 echo Opening browser tabs...
-start "" "http://localhost:5173/"
 start "" "http://localhost:8080/"
+start "" "http://localhost:5173/"
 
 echo.
 echo Frontend: http://localhost:5173/
