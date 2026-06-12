@@ -56,6 +56,12 @@ class GpsService {
         let azAngle = await gpsBuilder.findAzimuthAngle(startLat, startLon, destLat, destLon);
         let elAngle = await gpsBuilder.findElevationAngle(startLat, startLon, startEl, destLat, destLon, destEl);
 
+        // calibrate to point gimbal south for better gulf testing
+        azAngle = azAngle + 180;
+        if (azAngle > 360) {
+            azAngle = azAngle - 360;
+        }
+
         // convert to be usable by pelco-D
         azAngle = azAngle * 100;
         elAngle = elAngle * 100;

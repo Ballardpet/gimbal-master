@@ -3,7 +3,12 @@ import { pelcoBuilder } from "../pelcoBuilder.js";
 
 class AzElService {
     // This is where automated control to pointing to az/el will happen
+
+
     async pointTo(azimuth, elevation){
+        // Calibration for gimbal pointing south for better testing on the gulf
+        azimuth = azimuth + 180;
+
         // sanitize negative azimuth
         if (azimuth < 0){
             azimuth = azimuth * -1;
