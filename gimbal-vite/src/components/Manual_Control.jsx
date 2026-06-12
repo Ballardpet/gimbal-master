@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
 export default function Manual_control(){
 ////////////////////////////////////
     const activeDirection = useRef(null);
-    /////////////////////////////////
+    ///////////////////////////////// 
 
     const handleClick = async (direction) => {
 
