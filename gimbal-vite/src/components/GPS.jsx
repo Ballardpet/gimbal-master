@@ -92,7 +92,7 @@ export default function GPS(){
             <h2>Point to GPS Coordinate. Using DD </h2>
 
 
-            <label><input type="checkbox" checked={cameraPoint} onChange={(e) => setCameraPoint(e.target.checked)}/>Camera Point: Adjust "Level" 90 Degrees</label>
+            <label><input type="checkbox" checked={cameraPoint} onChange={(e) => setCameraPoint(e.target.checked)}/>Camera Point: Adjust "level" to be flat or forward</label>
             
             <br />
             
