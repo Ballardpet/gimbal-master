@@ -19,8 +19,8 @@ To-Do
  - How to parse data real-time
  - How to conver to something reasonable
 
-* Probably only need location Bytes*
-
+* Probably only need location Bytes *
+* Also need some form of identifier *
 
 
 
