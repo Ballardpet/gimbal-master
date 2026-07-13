@@ -1,0 +1,98 @@
+Link to IEEE P5 Website: https://standards.ieee.org/ieee/1278.1/4949/
+
+Find P5 structure in Vault: SW/SPARS/NET/Net.h
+
+We're tracking our jets with this, not enemy
+
+We get P5 info over UDP
+
+Current thought process for data flow
+ - Make a new program
+ - Read P5 over UDP
+ - Convert to an easy JSON format like Dump1090
+ - Read & Filter on front-end
+    - Display a list of aircraft to track
+    - Maybe click one to start tracking or just enter some ID
+
+To-Do
+ - Learn how to read off UDP
+ - How to parse data real-time
+ - How to conver to something reasonable
+
+* Probably only need location Bytes*
+
+
+
+
+
+ Full P5 Structure
+ DIS Entity State PDU (144 bytes)
+
+├── PDU Header (12)
+│   ├── protocolVersion        uint8
+│   ├── exerciseID             uint8
+│   ├── pduType                uint8
+│   ├── protocolFamily         uint8
+│   ├── timestamp              uint32
+│   ├── pduLength              uint16
+│   └── padding                uint16
+│
+├── Entity Identifier (6)
+│   ├── site                   uint16
+│   ├── application            uint16
+│   └── entity                 uint16
+│
+├── Force Information (2)
+│   ├── forceID                uint8
+│   └── articulationCount      uint8
+│
+├── Entity Type (8)
+│   ├── entityKind             uint8
+│   ├── entityDomain           uint8
+│   ├── entityCountry          uint16
+│   ├── entityCategory         uint8
+│   ├── entitySubcategory      uint8
+│   ├── entitySpecific         uint8
+│   └── entityExtra            uint8
+│
+├── Alternative Entity Type (8)
+│   ├── altKind                uint8
+│   ├── altDomain              uint8
+│   ├── altCountry             uint16
+│   ├── altCategory            uint8
+│   ├── altSubcategory         uint8
+│   ├── altSpecific            uint8
+│   └── altExtra               uint8
+│
+├── Velocity (12)
+│   ├── velX                   float
+│   ├── velY                   float
+│   └── velZ                   float
+│
+├── Location (24)
+│   ├── locX                   double
+│   ├── locY                   double
+│   └── locZ                   double
+│
+├── Orientation (12)
+│   ├── oriPsi                 float
+│   ├── oriTheta               float
+│   └── oriPhi                 float
+│
+├── Appearance / Dead Reckoning (44)
+│   ├── appearance             uint32
+│   ├── deadReckoningAlgorithm uint8
+│   ├── deadReckoningParams[15]
+│   ├── linAccX                float
+│   ├── linAccY                float
+│   ├── linAccZ                float
+│   ├── angVelX                float
+│   ├── angVelY                float
+│   └── angVelZ                float
+│
+├── Entity Marking (12)
+│   ├── markingCharacterSet    uint8
+│   └── entityMarking[11]
+│
+└── Capabilities (4)
+    └── capabilities           uint32

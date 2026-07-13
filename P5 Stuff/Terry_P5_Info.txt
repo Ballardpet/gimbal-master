@@ -1,0 +1,126 @@
+#pragma once
+
+#ifndef SPARS_NET_H 
+#define SPARS_NET_H
+
+#include "Types.h"
+#include "SPARS.h"
+
+// ============================================================
+// WEB BUFFER — placeholder for future Socket 7 Web FSM
+// ============================================================
+#define WEB_BUF_SIZE 512
+
+typedef struct {
+    uint8_t  data[WEB_BUF_SIZE];
+    uint16_t length;
+} web_buffer_t;
+
+extern web_buffer_t  *active_web_buffer;
+
+// ============================================================
+// NET STATE
+// ============================================================
+typedef struct {
+   bool     packet_ready;    // Set by Net() when new UDP PdU processed, cleared by CDU when read for display
+    unsigned long pdu_count; // Total PDUs processed since startup, for JSON status response
+     uint32_t  idle_per_sec; // Updated by Net_Main.c every second, included in JSON status response
+} Net_State_t;
+
+
+
+// ============================================================
+// TARGET TRACKING TABLE — owned by NET, read by CDU and Vector
+// ============================================================
+typedef struct {
+    ECEF_Coord ecef;
+    float      altitude;
+    uint32_t   last_seen;   // run_time_sec at last UDP update
+    uint8_t    id;
+    bool       active;
+} Target_t;
+
+// ============================================================
+// DIS Entity State PDU — 144 bytes fixed (IEEE 1278.1-2012)
+// ============================================================
+#pragma pack(push, 1)
+
+typedef struct {
+    // --- PDU Header (12 Bytes) ---
+    uint8_t  protocolVersion;     // 0  IEEE 1278.1-2012 DIS version
+    uint8_t  exerciseID;          // 1  95
+    uint8_t  pduType;             // 2  entity state = 1, fire = 2, etc.
+    uint8_t  protocolFamily;      // 3  entity info = 1, warhead detonation = 2, etc.
+    uint32_t timestamp;           // 4-7  57:13.301355 (absolute)
+    uint16_t pduLength;           // 8-9  144 bytes for Entity State PDU
+    uint16_t padding;             // 10-11 0000 must be zero for 32-bit alignment
+
+    // --- Entity ID (6 Bytes) ---
+    uint16_t site;                // 12-13 7
+    uint16_t application;         // 14-15 20
+    uint16_t entity;              // 16-17 1 unique per target
+
+    // --- Force & Appearance (6 Bytes) ---
+    uint8_t  forceID;             // 18 2  1 friendly, 2 opposing, 3 neutral, 4 unknown
+    uint8_t  articulationCount;   // 19 0  for now, but could be used for turret angles
+    uint8_t  entityKind;          // 20 1  1 platform, 2 munition, 3 life form, etc.
+    uint8_t  entityDomain;        // 21 2  1 land, 2 air, 3 surface, 4 space
+    uint16_t entityCountry;       // 22-23 225 USA
+
+    // --- Entity Type (4 Bytes) ---
+    uint8_t  entityCategory;      // 24 1  1 for USAF F-16, 2 for US Army M1 Abrams, etc.
+    uint8_t  entitySubcategory;   // 25 5
+    uint8_t  entitySpecific;      // 26 3
+    uint8_t  entityExtra;         // 27 0  reserved for future use
+
+    // --- Alternative Entity Type (8 Bytes) ---
+    uint8_t  altKind;             // 28 0
+    uint8_t  altDomain;           // 29 0
+    uint16_t altCountry;          // 30-31 0
+    uint8_t  altCategory;         // 32 0
+    uint8_t  altSubcategory;      // 33 0
+    uint8_t  altSpecific;         // 34 0
+    uint8_t  altExtra;            // 35 0
+
+    // --- Linear Velocity (12 Bytes) ---
+    float    velX, velY, velZ;    // 36-47 47.25 m/s in WGS 84 ECEF coordinate system
+
+    // --- Entity Location (24 Bytes) ---
+    double   locX, locY, locZ;    // 48-71 location in meters in WGS 84 ECEF (Geometric Truth)
+
+    // --- Entity Orientation (12 Bytes) ---
+    float    oriPsi, oriTheta, oriPhi; // 72-83 orientation in radians (yaw, pitch, roll)
+
+    // --- Dead Reckoning (44 Bytes) ---
+    uint32_t appearance;              // 84-87
+    uint8_t  deadReckoningAlgorithm;  // 88
+    uint8_t  deadReckoningParams[15]; // 89-103
+    float    linAccX, linAccY, linAccZ; // 104-115 linear acceleration m/s²
+    float    angVelX, angVelY, angVelZ; // 116-127 angular velocity rad/s
+
+    // --- Entity Marking (12 Bytes) ---
+    uint8_t  markingCharacterSet; // 128 1 for ASCII
+    char     entityMarking[11];   // 129-139 DOOM90 ASCII, null-terminated
+
+    // --- Capabilities (4 Bytes) ---
+    uint32_t capabilities;        // 140-143 bitfield for special capabilities
+
+} dis_entity_state_pdu_t;
+
+#pragma pack(pop)
+
+// ============================================================
+// EXTERN DECLARATIONS
+// ============================================================
+extern Net_State_t   net_state;
+extern uint8_t       udp_payload[256];
+extern Target_t      targets[10];
+extern volatile bool spi_fault;
+
+// ============================================================
+// PROTOTYPES
+// ============================================================
+void INIT_NET(void);
+void Net(void);
+
+#endif // SPARS_NET_H
