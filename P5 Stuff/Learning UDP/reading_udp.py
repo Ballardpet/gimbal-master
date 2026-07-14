@@ -13,35 +13,17 @@ class Aircraft:
         self.alt = 0.0
         self.timestamp = None
 
-        # self.site = 0
-        # self.application = 0
-        # self.entity = 0
-
-        # self.force_id = 0
-
-        # self.entity_kind = 0
-        # self.entity_domain = 0
-        # self.entity_country = 0
-        # self.entity_category = 0
-        # self.entity_subcategory = 0
-        # self.entity_specific = 0
-        # slf.entity_extra = 0
     def print(self):
         print("Callsign:", self.callsign, "lat:", self.lat, "lon:", self.lon, "alt:", self.alt, "last updated:", self.timestamp)
 
 def parseP5(message):
-    # print("Here's what the function recieves:", message)
     # Isolate callsign
     callsign = message[129:140].rstrip(b"\x00").decode("ascii")
-    # print("callsign", callsign)
 
     # Message contains a callsign, so parse
-    if 'CALLSGN' in callsign or 'GND' in callsign: # Might need to change this. I Keep getting GND consistently. Maybe this is grounded planes
-        # print("This is a P5 message")
-        # aircraft_id = callsign[len("CALLSGN"):]
-        aircraft_id = callsign # Maybe leave "CALLSGN" in. If we are getting other signs like "GND" for ground or something
+    if 'CALLSGN' in callsign or 'GND' in callsign:
 
-        # make a threat type variable. for ground vs air. have ID and callsign/ground separate. Or, just leave it as one big thing
+        # maybe make a threat type variable. for ground vs air. have ID and callsign/ground separate. Or, just leave it as one big thing
         
         # unpack appropriate bytes, convert to a decimal, then un-tuple
         ecef_x = struct.unpack(">d", message[48:56])[0]
@@ -51,19 +33,12 @@ def parseP5(message):
         # Convert from ECEF to decimal GPS
         lat, lon, alt = pm.ecef2geodetic(ecef_x, ecef_y, ecef_z)
         
+        # Track the last time the aircraft info was updated
         timestamp = datetime.now() # Maybe periodically delete old aircraft from array        
-        """
-        aircraft = Aircraft()
-        aircraft.callsign = aircraft_id
-        aircraft.lat = lat
-        aircraft.lon = lon
-        aircraft.alt = alt
-        aircraft.timestamp = timestamp
-        """
 
         if callsign not in aircraft_dict:
             aircraft = Aircraft()
-            aircraft.callsign = aircraft_id
+            aircraft.callsign = callsign
             aircraft.lat = lat
             aircraft.lon = lon
             aircraft.alt = alt
@@ -78,18 +53,10 @@ def parseP5(message):
             aircraft.alt = alt
             aircraft.timestamp = timestamp
 
-        # print(aircraft_id, lat, lon, alt, timestamp)
+        # Don't really need to print here. This is just for updating the aircraft dictionary as new messages come in
+        # Still need a separate function that periodically "prints" the whole dictionary.
+            # Will eventually want it somewhere accessible by the other program
         aircraft.print()
-
-        # From here:
-            # Extract identification (callsign?)
-            # Exctract LLA
-                # I think LLA is in ECEF, not gps coordinates. Will have to adjust appropriately.
-            # Save it to an array or something
-                # Update array if its callsign/id exists
-                # Add as new object if it does exist
-            # At some point make it accessable by the rest of the program
-                # Something nice and easy like JSON so I don't really have to change anything in gimbal_server
     
     # Message does not contain a callsign, so don't parse
     else:
@@ -108,8 +75,6 @@ try:
     while True:
         data, addr = sock.recvfrom(4096)  # Buffer size in bytes
         parseP5(data)
-        # print(f"Received {len(data)} bytes from {addr}:")
-        # print(data)
 
 except KeyboardInterrupt:
     print("\nStopping receiver...")
@@ -118,12 +83,9 @@ finally:
     sock.close()
     print("Socket closed.")
 
-# This can read info from multiple sources at once. Seems to handle udp send 1 & 2 at the same time. Generally I can assume how it will work for receiving P5
-
-# Next step is to test saving the information it receives. Maybe send something more complex like an object. Then have this program store an array of objects. 
-# Then update on receieve. Or update every second. Something like that.
-
-# Refer to notes in notebook on 7/13/2026 to proceed
+# Seem to be properly storing information from all incoming packages
+# Next step is to make another loop that periodically "prints" the contents of the dictionary
+    # Printing to JSON would be nice
 
 
 
@@ -160,4 +122,4 @@ finally:
         print(f"Entity Subcategory: {entity_subcategory}")
         print(f"Entity Specific: {entity_specific}")
         print(f"Entity Extra: {entity_extra}")
-        """
+"""
