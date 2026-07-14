@@ -9,6 +9,13 @@ import threading
 import time
 # converting to JSON
 import json
+# writing data to a file
+import os
+
+# JSON file locations. CHANGE THIS WHEN THIS PROGRAM MOVES TO FINAL FOLDER!
+JSON_FILE = "data/p5_aircraft.json"
+TEMP_FILE = "data/p5_aircraft.tmp"
+os.makedirs("data", exist_ok=True)
 
 aircraft_dict = {}
 
@@ -32,10 +39,7 @@ class Aircraft:
             "timestamp": self.timestamp.isoformat()
         }
 
-# How to print/export json for the other program
-# To-Do here:
-    # Convert to JSON instead of text
-    # Put it somewhere the other program can access
+# Exporting data to a JSON file for gimbal-server
 def exportDictionary():
     while True: 
         now = datetime.now()
@@ -49,10 +53,19 @@ def exportDictionary():
         json_data = {}
         for aircraft in aircraft_dict.values():
             json_data[aircraft.callsign] = aircraft.to_json()
+
+        # Write to a temporary file
+        with open(TEMP_FILE, "w") as file:
+            json.dump(json_data, file, indent=4)
+
+        # Replace the old JSON with the new one
+        os.replace(TEMP_FILE, JSON_FILE)
         
+        ########################## Eventually remove this when not debugging
         print("sample JSON")
         print(json.dumps(json_data, indent=4))
         
+        ########################## Eventually remove this when not debugging
         print("Current Aircraft")
         # Add "list()" so that there aren't issues if the dictionary changes size mid-run
         for aircraft in list(aircraft_dict.values()):
