@@ -1,7 +1,12 @@
 import socket
 from datetime import datetime
+# converting data into ecef
 import struct
+# converting ecef to gps coordinates
 import pymap3d as pm
+# using threads
+import threading 
+import time
 
 aircraft_dict = {}
 
@@ -16,12 +21,18 @@ class Aircraft:
     def print(self):
         print("Callsign:", self.callsign, "lat:", self.lat, "lon:", self.lon, "alt:", self.alt, "last updated:", self.timestamp)
 
+# How to print/export json for the other program
+# To-Do here:
+    # Delete entries that haven't been updated in a while
+    # Convert to JSON instead of text
+    # Put it somewhere the other program can access
 def exportDictionary():
-    # Eventually consider using threads. To update every half-second instead of updating every single time we get a new message
-    "This will be how we print/export the json for the other program"
-    print("Current Aircraft")
-    for aircraft in aircraft_dict.values():
-        aircraft.print()
+    while True: 
+        print("Current Aircraft")
+        # Add "list()" so that there aren't issues if the dictionary changes size mid-run
+        for aircraft in list(aircraft_dict.values()):
+            aircraft.print()
+        time.sleep(0.5)
 
 def parseP5(message):
     # Isolate callsign
@@ -43,28 +54,21 @@ def parseP5(message):
         # Track the last time the aircraft info was updated
         timestamp = datetime.now() # Maybe periodically delete old aircraft from array        
 
+
+        # If calsign not in dictionary, create new aircaft and add to dictionary
         if callsign not in aircraft_dict:
             aircraft = Aircraft()
             aircraft.callsign = callsign
-            aircraft.lat = lat
-            aircraft.lon = lon
-            aircraft.alt = alt
-            aircraft.timestamp = timestamp
-
             aircraft_dict[callsign] = aircraft
-        else:
-            aircraft = aircraft_dict[callsign]
+        
+        # retrieve aircraft by callsign
+        aircraft = aircraft_dict[callsign]
 
-            aircraft.lat = lat
-            aircraft.lon = lon
-            aircraft.alt = alt
-            aircraft.timestamp = timestamp
-
-        # Don't really need to print here. This is just for updating the aircraft dictionary as new messages come in
-        # Still need a separate function that periodically "prints" the whole dictionary.
-            # Will eventually want it somewhere accessible by the other program
-        # aircraft.print()
-        exportDictionary()
+        # update aircraft with new info
+        aircraft.lat = lat
+        aircraft.lon = lon
+        aircraft.alt = alt
+        aircraft.timestamp = timestamp
     
     # Message does not contain a callsign, so don't parse
     else:
@@ -79,6 +83,14 @@ sock.bind((HOST, PORT))
 
 print(f"Listening on UDP port {PORT}...")
 
+# create new thread. say that its job will be to run exportDictionary
+    # no parenthesis. we're giving it the function, not calling it
+export_thread = threading.Thread(target=exportDictionary)
+# tells the thread to end when the program does. otherwise it runs forever since it has "while True"
+export_thread.daemon = True
+# actually stars the thread
+export_thread.start()
+
 try:
     while True:
         data, addr = sock.recvfrom(4096)  # Buffer size in bytes
@@ -90,10 +102,6 @@ except KeyboardInterrupt:
 finally:
     sock.close()
     print("Socket closed.")
-
-# Seem to be properly storing information from all incoming packages
-# Next step is to make another loop that periodically "prints" the contents of the dictionary
-    # Printing to JSON would be nice
 
 
 
