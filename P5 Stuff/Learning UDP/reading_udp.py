@@ -7,6 +7,8 @@ import pymap3d as pm
 # using threads
 import threading 
 import time
+# converting to JSON
+import json
 
 aircraft_dict = {}
 
@@ -20,6 +22,15 @@ class Aircraft:
 
     def print(self):
         print("Callsign:", self.callsign, "lat:", self.lat, "lon:", self.lon, "alt:", self.alt, "last updated:", self.timestamp)
+        
+    def to_json(self):
+        return {
+            "callsign": self.callsign,
+            "lat": self.lat,
+            "lon": self.lon,
+            "alt": self.alt,
+            "timestamp": self.timestamp.isoformat()
+        }
 
 # How to print/export json for the other program
 # To-Do here:
@@ -34,10 +45,19 @@ def exportDictionary():
             if now - aircraft.timestamp > timedelta(seconds=10):
                 del aircraft_dict[aircraft.callsign]
         
+        # Conversion to JSON
+        json_data = {}
+        for aircraft in aircraft_dict.values():
+            json_data[aircraft.callsign] = aircraft.to_json()
+        
+        print("sample JSON")
+        print(json.dumps(json_data, indent=4))
+        
         print("Current Aircraft")
         # Add "list()" so that there aren't issues if the dictionary changes size mid-run
         for aircraft in list(aircraft_dict.values()):
             aircraft.print()
+
         time.sleep(0.5)
 
 def parseP5(message):

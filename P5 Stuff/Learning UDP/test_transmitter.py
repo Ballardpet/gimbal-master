@@ -3,36 +3,38 @@ import struct
 import time
 import pymap3d as pm
 
-DEST_IP = "127.0.0.1"      # Change to your receiver's IP if on another PC
+DEST_IP = "127.0.0.1"
 DEST_PORT = 3000
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-lat = 34.000000
-lon = -118.000000
-alt = 1000.0
+# Aircraft positions
+lat1, lon1, alt1 = 34.000000, -118.000000, 1000.0
+lat2, lon2, alt2 = 34.010000, -118.010000, 1200.0
+lat3, lon3, alt3 = 33.995000, -118.005000, 50.0   # Ground vehicle
 
-while True:
+
+def send_entity(callsign, entity_id, lat, lon, alt):
     packet = bytearray(144)
 
     # --------------------------
     # PDU Header
     # --------------------------
-    packet[0] = 6          # protocolVersion
-    packet[1] = 95         # exerciseID
-    packet[2] = 1          # Entity State PDU
-    packet[3] = 1          # protocolFamily
+    packet[0] = 6
+    packet[1] = 95
+    packet[2] = 1
+    packet[3] = 1
 
-    struct.pack_into(">I", packet, 4, 0)       # timestamp
-    struct.pack_into(">H", packet, 8, 144)     # pduLength
-    struct.pack_into(">H", packet, 10, 0)      # padding
+    struct.pack_into(">I", packet, 4, 0)
+    struct.pack_into(">H", packet, 8, 144)
+    struct.pack_into(">H", packet, 10, 0)
 
     # --------------------------
     # Entity Identifier
     # --------------------------
-    struct.pack_into(">H", packet, 12, 1)      # site
-    struct.pack_into(">H", packet, 14, 1)      # application
-    struct.pack_into(">H", packet, 16, 1)      # entity
+    struct.pack_into(">H", packet, 12, 1)
+    struct.pack_into(">H", packet, 14, 1)
+    struct.pack_into(">H", packet, 16, entity_id)
 
     # --------------------------
     # Force Info
@@ -45,15 +47,11 @@ while True:
     # --------------------------
     packet[20] = 1
     packet[21] = 2
-    struct.pack_into(">H", packet, 22, 225)    # USA
+    struct.pack_into(">H", packet, 22, 225)
     packet[24] = 1
     packet[25] = 0
     packet[26] = 0
     packet[27] = 0
-
-    # --------------------------
-    # Velocity (leave zero)
-    # --------------------------
 
     # --------------------------
     # Location (ECEF)
@@ -65,25 +63,29 @@ while True:
     struct.pack_into(">d", packet, 64, z)
 
     # --------------------------
-    # Orientation (leave zero)
-    # --------------------------
-
-    # --------------------------
     # Entity Marking
     # --------------------------
-    packet[128] = 1                     # character set
-
-    callsign = "CALLSGN1"
-    packet[129:129+len(callsign)] = callsign.encode("ascii")
-
-    # --------------------------
-    # Capabilities
-    # --------------------------
+    packet[128] = 1
+    packet[129:129 + len(callsign)] = callsign.encode("ascii")
 
     sock.sendto(packet, (DEST_IP, DEST_PORT))
 
     print(f"Sent {callsign}: {lat:.6f}, {lon:.6f}, {alt:.1f}")
 
-    lat += 0.00005      # Move north a tiny bit
+
+while True:
+
+    # Aircraft 1 (flies north)
+    send_entity("CALLSGN1", 1, lat1, lon1, alt1)
+
+    # Aircraft 2 (flies east)
+    send_entity("CALLSGN2", 2, lat2, lon2, alt2)
+
+    # Ground vehicle (stationary)
+    send_entity("GND1", 3, lat3, lon3, alt3)
+
+    # Move the aircraft
+    lat1 += 0.00005      # North
+    lon2 += 0.00005      # East
 
     time.sleep(0.5)
