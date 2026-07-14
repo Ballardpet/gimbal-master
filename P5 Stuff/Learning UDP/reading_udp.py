@@ -16,6 +16,13 @@ class Aircraft:
     def print(self):
         print("Callsign:", self.callsign, "lat:", self.lat, "lon:", self.lon, "alt:", self.alt, "last updated:", self.timestamp)
 
+def exportDictionary():
+    # Eventually consider using threads. To update every half-second instead of updating every single time we get a new message
+    "This will be how we print/export the json for the other program"
+    print("Current Aircraft")
+    for aircraft in aircraft_dict.values():
+        aircraft.print()
+
 def parseP5(message):
     # Isolate callsign
     callsign = message[129:140].rstrip(b"\x00").decode("ascii")
@@ -56,7 +63,8 @@ def parseP5(message):
         # Don't really need to print here. This is just for updating the aircraft dictionary as new messages come in
         # Still need a separate function that periodically "prints" the whole dictionary.
             # Will eventually want it somewhere accessible by the other program
-        aircraft.print()
+        # aircraft.print()
+        exportDictionary()
     
     # Message does not contain a callsign, so don't parse
     else:
