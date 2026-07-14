@@ -1,7 +1,31 @@
 import socket
 
+def parseP5(message):
+    print("Here's what the function recieves:", message)
+    # Isolate callsign
+    callsign = message[129:140]
+    print("callsign", callsign)
+
+    # Message contains a callsign, so parse
+    if b'CALLSGN' in callsign:
+        print("This is a P5 message")
+        # From here:
+            # Extract identification (callsign?)
+            # Exctract LLA
+            # Maybe add a timestamp
+                # Last updated at xx:xx:xx
+                # maybe delete if it hasn't been updated in a while
+            # Save it to an array or something
+                # Update array if its callsign/id exists
+                # Add as new object if it does exist
+            # At some point make it accessable by the rest of the program
+                # Something nice and easy like JSON so I don't really have to change anything in gimbal_server
+    
+    # Message does not contain a callsign, so don't parse
+    else:
+        print("This is not a P5 message")
+
 HOST = "0.0.0.0"  # Listen on all interfaces
-# HOST = "192.168.1.205"  # My address
 
 PORT = 3000
 
@@ -13,7 +37,8 @@ print(f"Listening on UDP port {PORT}...")
 try:
     while True:
         data, addr = sock.recvfrom(4096)  # Buffer size in bytes
-        print(f"Received {len(data)} bytes from {addr}:")
+        parseP5(data)
+        #print(f"Received {len(data)} bytes from {addr}:")
         print(data)
 
 except KeyboardInterrupt:
