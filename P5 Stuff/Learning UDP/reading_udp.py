@@ -1,5 +1,5 @@
 import socket
-from datetime import datetime
+from datetime import datetime, timedelta
 # converting data into ecef
 import struct
 # converting ecef to gps coordinates
@@ -23,11 +23,17 @@ class Aircraft:
 
 # How to print/export json for the other program
 # To-Do here:
-    # Delete entries that haven't been updated in a while
     # Convert to JSON instead of text
     # Put it somewhere the other program can access
 def exportDictionary():
     while True: 
+        now = datetime.now()
+
+        # Delete aircraft that haven't been updated in 10 seconds from dictionary
+        for aircraft in list(aircraft_dict.values()):
+            if now - aircraft.timestamp > timedelta(seconds=10):
+                del aircraft_dict[aircraft.callsign]
+        
         print("Current Aircraft")
         # Add "list()" so that there aren't issues if the dictionary changes size mid-run
         for aircraft in list(aircraft_dict.values()):
