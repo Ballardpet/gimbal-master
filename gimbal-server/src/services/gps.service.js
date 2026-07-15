@@ -2,6 +2,8 @@ import { pelcoBuilder } from "../pelcoBuilder.js";
 import { gpsBuilder } from "../gpsBuilder.js";
 // running udpreader as a process
 import { spawn } from "child_process";
+// for reading P5 JSON file
+import { readFile } from "fs/promises";
 
 class GpsService {
 
@@ -55,6 +57,47 @@ class GpsService {
             return null;
         }
     }
+
+    //////////////////////////////////////////////////////////
+    async p5Point(startLat, startLon, startEl, targetCallsign, cameraPoint){
+        // get data from p5 json file
+        const file= "../data/p5_aircraft.json";
+        
+        try {
+            // read JSON from file
+            const text = await readFile(file, "utf8");
+            const data = JSON.parse(text);
+
+            // CHANGE THIS: find aircraft with matching callsign, not hexid
+            const target = data[targetCallsign];
+
+            // use relevant aircraft info to get target LLA
+            let targetLat = target.lat;
+            let targetLon = target.lon;
+            let targetEl = target.alt;
+
+            // Reject invalid values
+            if (![targetLat, targetLon, targetEl].every(Number.isFinite)) {
+                return null;
+            }
+
+            // no need to convert elevation from feet to meters. ecef->gps conversion does this already
+            
+            // can call pointTo using start and target LLA
+            this.pointTo(startLat, startLon, startEl, targetLat, targetLon, targetEl, cameraPoint)
+
+            return {
+                lat: targetLat,
+                lon: targetLon,
+                el: targetEl
+            };
+        }
+        catch(error){
+            console.log(error);
+            return null;
+        }
+    }
+    //////////////////////////////////////////////////////////
 
     async pointTo(startLat, startLon, startEl, destLat, destLon, destEl, cameraPoint) {
         console.log({
