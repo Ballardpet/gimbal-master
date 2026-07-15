@@ -66,10 +66,10 @@ def exportDictionary():
         print(json.dumps(json_data, indent=4))
         
         ########################## Eventually remove this when not debugging
-        print("Current Aircraft")
+        # print("Current Aircraft")
         # Add "list()" so that there aren't issues if the dictionary changes size mid-run
-        for aircraft in list(aircraft_dict.values()):
-            aircraft.print()
+        # for aircraft in list(aircraft_dict.values()):
+            # aircraft.print()
 
         time.sleep(0.5)
 
