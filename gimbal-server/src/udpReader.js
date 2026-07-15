@@ -91,7 +91,8 @@ function exportDictionary() {
 
     // Debug output
     console.clear();
-    console.log(JSON.stringify(jsonData, null, 4));
+    // Print to console for debugging 
+    // console.log(JSON.stringify(jsonData, null, 4));
 }
 
 // export every half second
@@ -134,21 +135,13 @@ function parseP5(message) {
     const aircraft = aircraftDict[callsign];
 
     // Update aircraft
-    aircraft.lat = gps.latitude;
-    aircraft.lon = gps.longitude;
-    aircraft.alt = gps.height;
-    aircraft.timestamp = timestamp;
-
-    // Update aircraft
     aircraft.lat = gps.at(0);
     aircraft.lon = gps.at(1);
     aircraft.alt = gps.at(2);
+    aircraft.timestamp = timestamp;    
 }
 
-// ------------------------------------------------------------------
 // UDP Receiver
-// ------------------------------------------------------------------
-
 const socket = dgram.createSocket("udp4");
 
 socket.on("listening", () => {

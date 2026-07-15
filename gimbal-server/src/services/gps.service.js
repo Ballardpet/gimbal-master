@@ -1,7 +1,21 @@
 import { pelcoBuilder } from "../pelcoBuilder.js";
 import { gpsBuilder } from "../gpsBuilder.js";
+// running udpreader as a process
+import { spawn } from "child_process";
 
 class GpsService {
+
+    constructor() {
+        // THIS MIGHT NOT WORK WHEN RUNNING START.BAT!!!
+            // Gheehee nevermind
+        this.udpReader = spawn("node", ["udpReader.js"], {
+            stdio: "inherit"
+        });
+
+        this.udpReader.on("error", (err) => {
+            console.error("Failed to start udpReader:", err);
+        });
+    }
 
     async adsb(startLat, startLon, startEl, targetHexID, cameraPoint){
         // Get data from dump1090
