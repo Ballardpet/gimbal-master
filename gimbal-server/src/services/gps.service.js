@@ -99,6 +99,11 @@ class GpsService {
     }
     //////////////////////////////////////////////////////////
 
+    async getP5Aircraft() {
+        const text = await readFile("../data/p5_aircraft.json", "utf8");
+        return JSON.parse(text);
+    }
+
     async pointTo(startLat, startLon, startEl, destLat, destLon, destEl, cameraPoint) {
         console.log({
             startLat,

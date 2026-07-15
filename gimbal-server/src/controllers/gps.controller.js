@@ -32,9 +32,7 @@ const GpsController = () => {
         }
     })
 
-    // probably need some sort of P5 get too
-        // list of aircraft for front-end
-    router.post("/p5Point", async (req, res) => {
+        router.post("/p5Point", async (req, res) => {
         const { startLat, startLon, startEl, targetCallsign, cameraPoint } = req.body;
         try {
             // need to make this
@@ -43,6 +41,16 @@ const GpsController = () => {
         }
         catch (error) {
             res.status(400).json({error: error.message});
+        }
+    })
+
+    router.get("/p5Aircraft", async (req, res) => {
+        try {
+            const aircraft = await gpsService.getP5Aircraft();
+            res.status(200).json(aircraft);
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
         }
     })
 
