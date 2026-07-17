@@ -15,7 +15,9 @@ export default function GPS(){
     // ADSB stuff
     const [target, setTarget] = useState("");
 
-    const [isTracking, setIsTracking] = useState(false);
+    //const [isTracking, setIsTracking] = useState(false);
+    //const loopRef = useRef(false);
+    const [trackingMode, setTrackingMode] = useState(null); // null | "adsb" | "p5"
     const loopRef = useRef(false);
 
     const [targetLat, setTargetLat] = useState(0);
@@ -26,6 +28,7 @@ export default function GPS(){
 
     // P5
     const [p5Aircraft, setP5Aircraft] = useState([]);
+    const [p5Target, setP5Target] = useState("");      // P5 callsign
 
     const handleClick = async() => {
         console.log("Put a relevant GPS message here");
@@ -52,9 +55,21 @@ export default function GPS(){
     const handleADSB = async() => {
         // toggles start/stop
         // loopRef.current = !loopRef.current;
+        /*
         const newState = !loopRef.current;
         loopRef.current = newState;
-        setIsTracking(newState);
+        //setIsTracking(newState);
+        setTrackingMode(newState ? "adsb" : null);
+        */
+
+        if (trackingMode === "adsb") {
+            loopRef.current = false;
+            setTrackingMode(null);
+            return;
+        }
+
+        loopRef.current = true;
+        setTrackingMode("adsb");
 
         // maybe make an indicator when we start/stop
 
@@ -90,10 +105,53 @@ export default function GPS(){
     }
 
     const handleP5 = async () => {
-        // This should be super close to handleADSB
-        // Will eventually need some sort of check to deconflict adsb and p5: when one starts, it makes sure to stop the other if running
-        // Lets start by displaying aircraft!
-    }
+        // Toggle tracking
+        /*
+        const newState = !loopRef.current;
+        loopRef.current = newState;
+        //setIsTracking(newState);
+        setTrackingMode(newState ? "p5" : null);
+        */
+
+        if (trackingMode === "p5") {
+            loopRef.current = false;
+            setTrackingMode(null);
+            return;
+        }
+
+        loopRef.current = true;
+        setTrackingMode("p5");
+
+        while (loopRef.current) {
+            try {
+                const res = await fetch("/api/gps/p5Point", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        startLat,
+                        startLon,
+                        startEl,
+                        targetCallsign: p5Target,
+                        cameraPoint,
+                    }),
+                });
+
+                const data = await res.json();
+
+                setTargetLat(data.lat);
+                setTargetLon(data.lon);
+                setTargetEl(data.el);
+            }
+            catch (err) {
+                console.error(err);
+            }
+
+            // Update once per second
+            await sleep(1000);
+        }
+    };
 
     // update display
     const loadP5Aircraft = async () => {
@@ -152,12 +210,11 @@ export default function GPS(){
             <label htmlFor="target">Enter target hex code: </label>
             <input type="text" id="target" name = "target" value={target} onChange={(e) => setTarget(e.target.value)} />
             <div>Target Latitude: {targetLat} Target Longitue: {targetLon} Target Elevation: {targetEl}</div>
-            <button type="button" className="automated" onClick={() => handleADSB()} style={{backgroundColor: isTracking ? "red" : "green",color: "white"}}>{isTracking ? "Stop Tracking" : "Start Tracking"}</button>
+            <button type="button" className="automated" onClick={handleADSB} style={{backgroundColor: trackingMode === "adsb" ? "red" : "green",color: "white"}}>{trackingMode === "adsb"? "Stop Tracking": "Start Tracking"}</button>
 
             <br />
 
             <h2>Track P5</h2>
-            <div>Put a list of aircraft here</div>
             <table border="1">
                 <thead>
                     <tr>
@@ -170,15 +227,43 @@ export default function GPS(){
 
                 <tbody>
                     {p5Aircraft.map((aircraft) => (
-                        <tr key={aircraft.callsign}>
+                        <tr
+                            key={aircraft.callsign}
+                            className={p5Target === aircraft.callsign ? "selected-aircraft" : ""}
+                            onClick={() => setP5Target(aircraft.callsign)}
+                            style={{ cursor: "pointer" }}
+                        >
                             <td>{aircraft.callsign}</td>
-                            <td>{aircraft.lat}</td>
-                            <td>{aircraft.lon}</td>
-                            <td>{aircraft.alt}</td>
+                            <td>{aircraft.lat.toFixed(6)}</td>
+                            <td>{aircraft.lon.toFixed(6)}</td>
+                            <td>{aircraft.alt.toFixed(1)}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            <label htmlFor="p5Target">Selected Callsign: </label>
+                <input
+                    type="text"
+                    id="p5Target"
+                    value={p5Target}
+                    onChange={(e) => setP5Target(e.target.value)}
+                />
+            
+            <br />
+            
+            <button
+                type="button"
+                className="automated"
+                onClick={handleP5}
+                style={{
+                    backgroundColor: trackingMode === "p5" ? "red" : "green",
+                    color: "white"
+                }}
+            >
+                {trackingMode === "p5"? "Stop Tracking": "Start Tracking"}
+            </button>
+
             <div>Maybe just click on an aircraft to select it??</div>
             <div>For now, maybe just display a list and have the user enter a callsign. So it's just like ADSB tracking</div>
             <div>Have a "track" button here. Should track the selected aircraft. Also, this onClick and the one for ADS-B should be linked. If the other is on when you press it, it should be turned off</div>
