@@ -100,7 +100,7 @@ class GpsService {
     //////////////////////////////////////////////////////////
 
     async getP5Aircraft() {
-        const text = await readFile("../data/p5_aircraft.json", "utf8");
+        const text = await readFile("../src/data/p5_aircraft.json", "utf8");
         return JSON.parse(text);
     }
 

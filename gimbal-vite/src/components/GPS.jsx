@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function GPS(){
 
@@ -23,6 +23,9 @@ export default function GPS(){
     const [targetEl, setTargetEl] = useState(0);
 
     const [cameraPoint, setCameraPoint] = useState(false);
+
+    // P5
+    const [p5Aircraft, setP5Aircraft] = useState([]);
 
     const handleClick = async() => {
         console.log("Put a relevant GPS message here");
@@ -85,6 +88,35 @@ export default function GPS(){
             await sleep (1000);
         }
     }
+
+    const handleP5 = async () => {
+        // This should be super close to handleADSB
+        // Will eventually need some sort of check to deconflict adsb and p5: when one starts, it makes sure to stop the other if running
+        // Lets start by displaying aircraft!
+    }
+
+    // update display
+    const loadP5Aircraft = async () => {
+        try {
+            const res = await fetch("/api/gps/p5Aircraft");
+            const data = await res.json();
+
+            // Convert object into array
+            setP5Aircraft(Object.values(data));
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
+    // update display
+    useEffect(() => {
+        loadP5Aircraft();
+
+        const interval = setInterval(loadP5Aircraft, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
     
     
     return (
@@ -122,6 +154,35 @@ export default function GPS(){
             <div>Target Latitude: {targetLat} Target Longitue: {targetLon} Target Elevation: {targetEl}</div>
             <button type="button" className="automated" onClick={() => handleADSB()} style={{backgroundColor: isTracking ? "red" : "green",color: "white"}}>{isTracking ? "Stop Tracking" : "Start Tracking"}</button>
 
+            <br />
+
+            <h2>Track P5</h2>
+            <div>Put a list of aircraft here</div>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Callsign</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Altitude (m)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {p5Aircraft.map((aircraft) => (
+                        <tr key={aircraft.callsign}>
+                            <td>{aircraft.callsign}</td>
+                            <td>{aircraft.lat}</td>
+                            <td>{aircraft.lon}</td>
+                            <td>{aircraft.alt}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <div>Maybe just click on an aircraft to select it??</div>
+            <div>For now, maybe just display a list and have the user enter a callsign. So it's just like ADSB tracking</div>
+            <div>Have a "track" button here. Should track the selected aircraft. Also, this onClick and the one for ADS-B should be linked. If the other is on when you press it, it should be turned off</div>
+
         </section>
-    )
+    )   
 }

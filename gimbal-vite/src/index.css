@@ -111,6 +111,30 @@ code {
   background: var(--code-bg);
 }
 
+/* P5 Aircraft Table */
+table {
+  margin: 20px auto;
+  border-collapse: collapse;
+  min-width: 500px;
+}
+
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  text-align: center;
+}
+
+th {
+  color: var(--text-h);
+  background: var(--code-bg);
+}
+
+tbody tr:hover {
+  background: var(--accent-bg);
+  cursor: pointer;
+}
+
 
 /*
 :root {
