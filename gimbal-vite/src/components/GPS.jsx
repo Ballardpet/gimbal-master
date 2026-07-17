@@ -264,10 +264,6 @@ export default function GPS(){
                 {trackingMode === "p5"? "Stop Tracking": "Start Tracking"}
             </button>
 
-            <div>Maybe just click on an aircraft to select it??</div>
-            <div>For now, maybe just display a list and have the user enter a callsign. So it's just like ADSB tracking</div>
-            <div>Have a "track" button here. Should track the selected aircraft. Also, this onClick and the one for ADS-B should be linked. If the other is on when you press it, it should be turned off</div>
-
         </section>
     )   
 }

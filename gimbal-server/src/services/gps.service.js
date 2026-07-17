@@ -71,8 +71,6 @@ class GpsService {
             // CHANGE THIS: find aircraft with matching callsign, not hexid
             const target = data[targetCallsign];
 
-            // console.log(target) ////////////////////
-
             // use relevant aircraft info to get target LLA
             let targetLat = target.lat;
             let targetLon = target.lon;
