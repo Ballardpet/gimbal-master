@@ -61,7 +61,7 @@ class GpsService {
     //////////////////////////////////////////////////////////
     async p5Point(startLat, startLon, startEl, targetCallsign, cameraPoint){
         // get data from p5 json file
-        const file= "../data/p5_aircraft.json";
+        const file= "../src/data/p5_aircraft.json";
         
         try {
             // read JSON from file
@@ -70,6 +70,8 @@ class GpsService {
 
             // CHANGE THIS: find aircraft with matching callsign, not hexid
             const target = data[targetCallsign];
+
+            // console.log(target) ////////////////////
 
             // use relevant aircraft info to get target LLA
             let targetLat = target.lat;
