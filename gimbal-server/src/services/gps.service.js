@@ -58,7 +58,6 @@ class GpsService {
         }
     }
 
-    //////////////////////////////////////////////////////////
     async p5Point(startLat, startLon, startEl, targetCallsign, cameraPoint){
         // get data from p5 json file
         const file= "../src/data/p5_aircraft.json";
@@ -68,7 +67,7 @@ class GpsService {
             const text = await readFile(file, "utf8");
             const data = JSON.parse(text);
 
-            // CHANGE THIS: find aircraft with matching callsign, not hexid
+            // Select the right target
             const target = data[targetCallsign];
 
             // use relevant aircraft info to get target LLA
@@ -97,7 +96,6 @@ class GpsService {
             return null;
         }
     }
-    //////////////////////////////////////////////////////////
 
     async getP5Aircraft() {
         const text = await readFile("../src/data/p5_aircraft.json", "utf8");

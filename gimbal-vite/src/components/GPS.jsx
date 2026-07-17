@@ -53,15 +53,7 @@ export default function GPS(){
     }
 
     const handleADSB = async() => {
-        // toggles start/stop
-        // loopRef.current = !loopRef.current;
-        /*
-        const newState = !loopRef.current;
-        loopRef.current = newState;
-        //setIsTracking(newState);
-        setTrackingMode(newState ? "adsb" : null);
-        */
-
+        // handle start/stop & adsb/p5
         if (trackingMode === "adsb") {
             loopRef.current = false;
             setTrackingMode(null);
@@ -70,8 +62,6 @@ export default function GPS(){
 
         loopRef.current = true;
         setTrackingMode("adsb");
-
-        // maybe make an indicator when we start/stop
 
         while (loopRef.current){
             // call ADSBPoint
@@ -105,14 +95,7 @@ export default function GPS(){
     }
 
     const handleP5 = async () => {
-        // Toggle tracking
-        /*
-        const newState = !loopRef.current;
-        loopRef.current = newState;
-        //setIsTracking(newState);
-        setTrackingMode(newState ? "p5" : null);
-        */
-
+        // handle start/stop & adsb/p5
         if (trackingMode === "p5") {
             loopRef.current = false;
             setTrackingMode(null);
