@@ -15,10 +15,9 @@ export default function GPS(){
     // ADSB stuff
     const [target, setTarget] = useState("");
 
-    //const [isTracking, setIsTracking] = useState(false);
-    //const loopRef = useRef(false);
+    // used for the buttons
     const [trackingMode, setTrackingMode] = useState(null); // null | "adsb" | "p5"
-    //const loopRef = useRef(false);
+    // used for the loop
     const loopRef = useRef("none"); // "none" | "adsb" | "p5"
 
     const [targetLat, setTargetLat] = useState(0);
@@ -64,11 +63,7 @@ export default function GPS(){
         loopRef.current = "adsb";
         setTrackingMode("adsb");
 
-        //while (trackingMode === "adsb"){
         while (loopRef.current === "adsb"){
-            // call ADSBPoint
-                // should return target LLA
-            //if (trackingMode !== "adsb") break; //
             try {
                 const res = await fetch("/api/gps/adsb", {
                     method: "POST",
@@ -108,7 +103,6 @@ export default function GPS(){
         setTrackingMode("p5");
 
         while (loopRef.current === "p5") {
-            //if (trackingMode !== "p5") break; //
             try {
                 const res = await fetch("/api/gps/p5Point", {
                     method: "POST",
