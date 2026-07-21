@@ -18,8 +18,8 @@ export default function GPS(){
     //const [isTracking, setIsTracking] = useState(false);
     //const loopRef = useRef(false);
     const [trackingMode, setTrackingMode] = useState(null); // null | "adsb" | "p5"
-    const loopRef = useRef(false);
-    //const loopRef = useRef("none"); // "none" | "adsb" | "p5"
+    //const loopRef = useRef(false);
+    const loopRef = useRef("none"); // "none" | "adsb" | "p5"
 
     const [targetLat, setTargetLat] = useState(0);
     const [targetLon, setTargetLon] = useState(0);
@@ -56,16 +56,16 @@ export default function GPS(){
     const handleADSB = async() => {
         // handle start/stop & adsb/p5
         if (trackingMode === "adsb") {
-            loopRef.current = false;
+            loopRef.current = "none";
             setTrackingMode(null);
             return;
         }
 
-        loopRef.current = true;
+        loopRef.current = "adsb";
         setTrackingMode("adsb");
 
         //while (trackingMode === "adsb"){
-        while (loopRef.current){
+        while (loopRef.current === "adsb"){
             // call ADSBPoint
                 // should return target LLA
             //if (trackingMode !== "adsb") break; //
@@ -99,15 +99,15 @@ export default function GPS(){
     const handleP5 = async () => {
         // handle start/stop & adsb/p5
         if (trackingMode === "p5") {
-            loopRef.current = false;
+            loopRef.current = "none";
             setTrackingMode(null);
             return;
         }
 
-        loopRef.current = true;
+        loopRef.current = "p5";
         setTrackingMode("p5");
 
-        while (loopRef.current) {
+        while (loopRef.current === "p5") {
             //if (trackingMode !== "p5") break; //
             try {
                 const res = await fetch("/api/gps/p5Point", {
