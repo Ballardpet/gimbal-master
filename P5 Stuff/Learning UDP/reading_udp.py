@@ -133,6 +133,7 @@ export_thread.start()
 try:
     while True:
         data, addr = sock.recvfrom(4096)  # Buffer size in bytes
+        print(data)
         parseP5(data)
 
 except KeyboardInterrupt:
